@@ -22,53 +22,30 @@ export async function GET(request: Request) {
 
     let notices: GovernmentNotice[] = [];
 
-    // Priority 1: Real Open API Data (MSS + K-Startup + KOCCA)
-    // Run in parallel for speed, combine results
-    const [mssData, kStartupData, koccaData] = await Promise.all([
-        fetchFromOpenAPI(),
-        fetchFromKStartup(),
-        fetchFromKocca()
-    ]);
+    // Priority: Fetch from Supabase DB (Populated by Cron)
+    const { data: dbData, error } = await supabase.from('notices').select('*');
 
-    const apiData = [...mssData, ...kStartupData, ...koccaData];
+    if (error) {
+        console.error('Supabase Fetch Error:', error);
+    }
 
-    if (apiData.length > 0) {
-        notices = apiData;
-
-        // Save to Supabase (Upsert)
-        // Check if Supabase is configured
-        if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-            try {
-                const { error } = await supabase
-                    .from('notices')
-                    .upsert(
-                        apiData.map(n => ({
-                            title: n.title,
-                            agency: n.agency,
-                            start_date: n.startDate, // format YYYY-MM-DD
-                            end_date: n.endDate,
-                            region: n.region,
-                            category: n.category,
-                            url: n.url,
-                            source: n.source,
-                            description: n.description,
-                            fetched_at: n.fetchedAt
-                        })),
-                        { onConflict: 'url' }
-                    );
-
-                if (error) {
-                    console.error('Supabase Upsert Error:', error);
-                } else {
-                    console.log(`Saved ${apiData.length} notices to Supabase.`);
-                }
-            } catch (dbErr) {
-                console.error('Supabase Operation Failed:', dbErr);
-            }
-        }
+    if (dbData && dbData.length > 0) {
+        notices = dbData.map((row: any) => ({
+            id: row.id || row.url, // Use DB ID if available
+            title: row.title,
+            agency: row.agency,
+            startDate: row.start_date,
+            endDate: row.end_date,
+            region: row.region,
+            category: row.category,
+            url: row.url,
+            source: row.source,
+            description: row.description,
+            fetchedAt: row.fetched_at ? new Date(row.fetched_at) : new Date()
+        }));
     } else {
-        // Fallback if APIs fail or return empty (e.g. key issue)
-        // Use Robust Mock Data
+        // Fallback: Use Robust Mock Data if DB is empty (e.g. first run before Cron)
+        console.log('DB empty, using mock data.');
         const mockData = await fetchMockNotices();
         notices = [...mockData];
     }
