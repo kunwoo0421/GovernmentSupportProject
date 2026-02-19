@@ -54,6 +54,12 @@ export async function fetchFromOpenAPI(): Promise<GovernmentNotice[]> {
             const dateRaw = $(el).find('regDt').text() || $(el).find('writngDt').text();
 
             let urlRaw = $(el).find('url').text() || $(el).find('link').text();
+
+            // Fix: MSS API returns broken internal links (selectSIIA200View.do). Ignore them to use fallback.
+            if (urlRaw && urlRaw.includes('selectSIIA200View.do')) {
+                urlRaw = '';
+            }
+
             let url = normalizeUrl(urlRaw);
 
             if (!url) {
