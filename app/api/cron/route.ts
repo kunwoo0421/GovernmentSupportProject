@@ -17,7 +17,8 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         if (searchParams.get('force_reset') === 'true') {
             console.log('[Cron] Force Reset: Deleting all notices...');
-            const { error: delError } = await supabase.from('notices').delete().neq('description', 'IMPOSSIBLE_VALUE_TO_MATCH_ALL');
+            // Delete all rows where 'url' is not null (which should be all rows)
+            const { error: delError } = await supabase.from('notices').delete().not('url', 'is', null);
             if (delError) {
                 console.error('[Cron] Delete Failed:', delError);
             } else {

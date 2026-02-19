@@ -42,7 +42,7 @@ export async function GET(request: Request) {
             source: row.source,
             description: row.description,
             fetchedAt: row.fetched_at ? new Date(row.fetched_at) : new Date()
-        })).filter(n => n.url && (n.url.startsWith('http://') || n.url.startsWith('https://')));
+        })).filter(n => n.url && (n.url.startsWith('http://') || n.url.startsWith('https://')) && !n.url.includes('selectSIIA200View.do'));
     } else {
         // Fallback: Use Robust Mock Data if DB is empty (e.g. first run before Cron)
         console.log('DB empty, using mock data.');
