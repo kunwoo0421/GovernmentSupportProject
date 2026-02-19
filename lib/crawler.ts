@@ -24,7 +24,7 @@ export async function fetchFromOpenAPI(): Promise<GovernmentNotice[]> {
         const params = new URLSearchParams({
             serviceKey: DATA_GO_KR_API_KEY,
             pageNo: '1',
-            numOfRows: '100',
+            numOfRows: '500', // Increased limit to 500
         });
         // ... (existing axios call) ...
         const response = await axios.get(`${OPEN_API_URL}?${params.toString()}`, { timeout: 8000 });
