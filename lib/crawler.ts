@@ -110,7 +110,7 @@ export async function fetchFromKStartup(): Promise<GovernmentNotice[]> {
             const endDateRaw = $(el).find('endDt').text(); // sometimes provided
 
             let urlRaw = $(el).find('detailUrl').text() || $(el).find('url').text();
-            let url = urlRaw ? urlRaw.trim() : null;
+            let url = normalizeUrl(urlRaw);
 
             if (!url) {
                 const id = $(el).find('pbancId').text();
