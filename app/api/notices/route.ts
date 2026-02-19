@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { fetchMockNotices, fetchFromOpenAPI, fetchFromKStartup } from '@/lib/crawler';
+import { fetchMockNotices, fetchFromOpenAPI, fetchFromKStartup, fetchFromKocca } from '@/lib/crawler';
 import { GovernmentNotice } from '@/lib/types';
 import { compareDesc, compareAsc } from 'date-fns';
 
@@ -21,14 +21,15 @@ export async function GET(request: Request) {
 
     let notices: GovernmentNotice[] = [];
 
-    // Priority 1: Real Open API Data (MSS + K-Startup)
+    // Priority 1: Real Open API Data (MSS + K-Startup + KOCCA)
     // Run in parallel for speed, combine results
-    const [mssData, kStartupData] = await Promise.all([
+    const [mssData, kStartupData, koccaData] = await Promise.all([
         fetchFromOpenAPI(),
-        fetchFromKStartup()
+        fetchFromKStartup(),
+        fetchFromKocca()
     ]);
 
-    const apiData = [...mssData, ...kStartupData];
+    const apiData = [...mssData, ...kStartupData, ...koccaData];
 
     if (apiData.length > 0) {
         notices = apiData;

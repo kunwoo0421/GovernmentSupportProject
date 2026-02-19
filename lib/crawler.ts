@@ -134,6 +134,68 @@ export async function crawlKStartup(): Promise<GovernmentNotice[]> {
 }
 
 
+// ... (previous code)
+
+const KOCCA_API_KEY = process.env.KOCCA_API_KEY || '';
+const KOCCA_ENDPOINT = 'https://kocca.kr/api/pims/List.do';
+
+export async function fetchFromKocca(): Promise<GovernmentNotice[]> {
+    if (!KOCCA_API_KEY) return [];
+
+    try {
+        console.log(`[OpenAPI] Fetching from KOCCA...`);
+        // KOCCA uses query params directly 
+        const params = new URLSearchParams({
+            serviceKey: KOCCA_API_KEY,
+            pageNo: '1',
+            numOfRows: '100', // Max limit based on docs might be 100
+            // viewStartDt: '20240101' // Optional, can add if needed
+        });
+
+        const response = await axios.get(`${KOCCA_ENDPOINT}?${params.toString()}`, { timeout: 8000 });
+        const data = response.data;
+
+        // Response structure: { list: [ ... ] } or { INFO: { list: [...] } } based on different docs.
+        // User screenshot shows the JSON structure directly has "list" inside root or "INFO" wrapper?
+        // Screenshot shows: { "INFO": { ..., "list": [ ... ] } }
+        // Let's handle both just in case.
+
+        const list = data.list || (data.INFO && data.INFO.list) || [];
+        const notices: GovernmentNotice[] = [];
+
+        if (Array.isArray(list)) {
+            list.forEach((item: any, index: number) => {
+                // Date format YYYYMMDD -> YYYY-MM-DD
+                const formatDate = (d: string) => d && d.length === 8 ? `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}` : null;
+
+                const startDate = formatDate(item.startDt);
+                const endDate = formatDate(item.endDt);
+
+                notices.push({
+                    id: `api-kocca-${item.intcNoSeq || index}-${Date.now()}`,
+                    title: item.title,
+                    agency: '한국콘텐츠진흥원',
+                    region: '전국', // KOCCA is national
+                    category: item.cate || '콘텐츠지원',
+                    startDate: startDate || new Date().toISOString().split('T')[0],
+                    endDate: endDate,
+                    url: item.link,
+                    source: '한국콘텐츠진흥원(API)',
+                    description: `${item.boardTitle || '지원사업'} 공고입니다.`,
+                    fetchedAt: new Date()
+                });
+            });
+        }
+
+        console.log(`[OpenAPI] KOCCA fetched ${notices.length} items.`);
+        return notices;
+
+    } catch (e) {
+        console.error(`[OpenAPI] KOCCA Failed`, e);
+        return [];
+    }
+}
+
 // --- ROBUST MOCK COMPONENT ---
 
 export async function fetchMockNotices(): Promise<GovernmentNotice[]> {
