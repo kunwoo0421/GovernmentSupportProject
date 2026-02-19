@@ -15,12 +15,12 @@ export function NoticeCard({ notice }: NoticeCardProps) {
 
     return (
         <div className="group relative bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
             <div className="relative z-10 space-y-4">
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 space-y-1">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
                             {notice.source || 'Other'}
                         </span>
                         {notice.category && (
@@ -28,14 +28,14 @@ export function NoticeCard({ notice }: NoticeCardProps) {
                                 {notice.category}
                             </span>
                         )}
-                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
+                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#27273f] transition-colors line-clamp-2">
                             <a href={notice.url} target="_blank" rel="noopener noreferrer" className="focus:outline-none">
                                 <span className="absolute inset-0" aria-hidden="true" />
                                 {notice.title}
                             </a>
                         </h3>
                     </div>
-                    <div className="flex-shrink-0 text-gray-300 group-hover:text-blue-500 transition-colors">
+                    <div className="flex-shrink-0 text-gray-300 group-hover:text-[#27273f] transition-colors">
                         <ExternalLink className="w-5 h-5" />
                     </div>
                 </div>

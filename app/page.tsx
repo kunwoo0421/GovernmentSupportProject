@@ -67,7 +67,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-50 font-sans">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-indigo-900 via-blue-800 to-indigo-900 pt-20 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="relative bg-[#27273f] pt-20 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Abstract shapes */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-20">
           <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
@@ -94,7 +94,7 @@ export default function Home() {
             </div>
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight mb-8">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-cyan-200">우리 회사에 맞는 공고</span>를 찾아보세요
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-100 to-purple-200">우리 회사에 맞는 공고</span>를 찾아보세요
           </h1>
 
           {/* Search Bar */}
@@ -112,7 +112,7 @@ export default function Home() {
           </div>
 
           <div className="mt-6 flex justify-center">
-            <a href="/bids" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-400/30 text-indigo-100 text-sm font-medium transition-all backdrop-blur-sm">
+            <a href="/bids" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-indigo-100 text-sm font-medium transition-all backdrop-blur-sm">
               📢 나라장터 입찰공고 조회하기
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
@@ -165,7 +165,7 @@ export default function Home() {
 
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`text-sm px-3 py-2 rounded-lg transition-colors ml-auto md:ml-0 flex items-center gap-1 ${showFilters ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                  className={`text-sm px-3 py-2 rounded-lg transition-colors ml-auto md:ml-0 flex items-center gap-1 ${showFilters ? 'bg-[#27273f] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                 >
                   상세 검색 <span className="text-xs">{showFilters ? '▲' : '▼'}</span>
                 </button>
@@ -201,7 +201,7 @@ export default function Home() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => fetchNotices()}
-                className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+                className="flex items-center gap-1 hover:text-[#27273f] transition-colors"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
                 <span>새로고침</span>

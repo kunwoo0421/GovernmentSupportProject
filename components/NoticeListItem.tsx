@@ -17,11 +17,11 @@ export function NoticeListItem({ notice }: NoticeListItemProps) {
     const today = new Date();
 
     return (
-        <div className="group flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white p-4 sm:p-5 rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-200">
+        <div className="group flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white p-4 sm:p-5 rounded-xl border border-gray-100 hover:border-[#27273f]/50 hover:shadow-md transition-all duration-200">
 
             {/* Category/Status Badge Area */}
             <div className="flex flex-row sm:flex-col gap-2 min-w-[80px] sm:min-w-[100px] text-center">
-                <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 group-hover:bg-[#27273f]/10 group-hover:text-[#27273f] transition-colors">
                     {notice.category || '기타'}
                 </span>
                 <span className="text-xs text-gray-400 font-medium hidden sm:block">
@@ -37,7 +37,7 @@ export function NoticeListItem({ notice }: NoticeListItemProps) {
                     <span className="text-xs text-gray-400">{notice.region || '전국'}</span>
                 </div>
 
-                <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors pr-8 sm:pr-0 line-clamp-1 sm:line-clamp-2 leading-tight">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-[#27273f] transition-colors pr-8 sm:pr-0 line-clamp-1 sm:line-clamp-2 leading-tight">
                     <a href={notice.url} target="_blank" rel="noopener noreferrer" className="hover:underline focus:outline-none before:absolute before:inset-0 sm:before:hidden">
                         {notice.title}
                     </a>
@@ -56,7 +56,7 @@ export function NoticeListItem({ notice }: NoticeListItemProps) {
                     {/* Source Tag - Prominent Badge */}
                     <div className="ml-auto sm:ml-3 shrink-0">
                         <span className={`text-xs font-semibold px-2.5 py-1 rounded-md border
-                             ${notice.source?.includes('기업마당') ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                             ${notice.source?.includes('기업마당') ? 'bg-indigo-50 text-indigo-700 border-indigo-100' :
                                 notice.source?.includes('K-Startup') ? 'bg-purple-50 text-purple-600 border-purple-100' :
                                     'bg-slate-50 text-slate-500 border-slate-200'
                             }`}
@@ -73,7 +73,7 @@ export function NoticeListItem({ notice }: NoticeListItemProps) {
                     href={notice.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all"
+                    className="p-2 text-gray-400 hover:text-[#27273f] hover:bg-[#27273f]/10 rounded-full transition-all"
                 >
                     <ExternalLink className="w-5 h-5" />
                 </a>

@@ -16,6 +16,14 @@ const OPEN_API_URL = 'http://apis.data.go.kr/1421000/mssBizService_v2/getbizList
 
 // --- REAL CRAWLERS ---
 
+function normalizeUrl(url: string | undefined): string | null {
+    if (!url) return null;
+    const trimmed = url.trim();
+    if (trimmed.startsWith('http')) return trimmed;
+    if (trimmed.startsWith('/')) return `${BIZINFO_BASE_URL}${trimmed}`;
+    return `http://${trimmed}`; // Last resort? Or just return as is? Best to assume http if missing scheme but not relative
+}
+
 export async function fetchFromOpenAPI(): Promise<GovernmentNotice[]> {
     if (!DATA_GO_KR_API_KEY) return [];
     // ... (existing code for fetchFromOpenAPI) ...
@@ -45,8 +53,13 @@ export async function fetchFromOpenAPI(): Promise<GovernmentNotice[]> {
             const agency = $(el).find('dept').text() || $(el).find('writer').text() || '중소벤처기업부';
             const dateRaw = $(el).find('regDt').text() || $(el).find('writngDt').text();
 
-            let url = $(el).find('url').text() || $(el).find('link').text();
-            if (!url) url = `https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do?keyword=${encodeURIComponent(title.trim())}`;
+            let urlRaw = $(el).find('url').text() || $(el).find('link').text();
+            let url = normalizeUrl(urlRaw);
+
+            if (!url) {
+                // Fallback to search
+                url = `https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/list.do?keyword=${encodeURIComponent(title.trim())}`;
+            }
 
             notices.push({
                 id: `api-mss-${i}-${Date.now()}`,
@@ -96,8 +109,9 @@ export async function fetchFromKStartup(): Promise<GovernmentNotice[]> {
             const dateRaw = $(el).find('postDt').text() || $(el).find('regDt').text();
             const endDateRaw = $(el).find('endDt').text(); // sometimes provided
 
-            let url = $(el).find('detailUrl').text() || $(el).find('url').text();
-            // fallback URL
+            let urlRaw = $(el).find('detailUrl').text() || $(el).find('url').text();
+            let url = urlRaw ? urlRaw.trim() : null;
+
             if (!url) {
                 const id = $(el).find('pbancId').text();
                 if (id) url = `https://www.k-startup.go.kr/web/contents/bizPbanc.do?schM=view&pbancId=${id}`;
