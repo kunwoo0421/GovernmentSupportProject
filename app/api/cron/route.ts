@@ -14,6 +14,17 @@ export async function GET(request: Request) {
     console.log('[Cron] Starting scheduled data fetch...');
 
     try {
+        const { searchParams } = new URL(request.url);
+        if (searchParams.get('force_reset') === 'true') {
+            console.log('[Cron] Force Reset: Deleting all notices...');
+            const { error: delError } = await supabase.from('notices').delete().neq('description', 'IMPOSSIBLE_VALUE_TO_MATCH_ALL');
+            if (delError) {
+                console.error('[Cron] Delete Failed:', delError);
+            } else {
+                console.log('[Cron] DB Cleared successfully.');
+            }
+        }
+
         // 1. Fetch Government Support Notices
         const [mssData, kStartupData, koccaData] = await Promise.all([
             fetchFromOpenAPI(),

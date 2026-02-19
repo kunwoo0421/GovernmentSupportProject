@@ -30,9 +30,9 @@ export async function fetchFromOpenAPI(): Promise<GovernmentNotice[]> {
     try {
         console.log(`[OpenAPI] Fetching from mssBizService_v2...`);
         // Use manual query string to prevent double-encoding of ServiceKey by Axios
-        const queryString = `serviceKey=${DATA_GO_KR_API_KEY}&pageNo=1&numOfRows=500`;
+        const queryString = `serviceKey=${DATA_GO_KR_API_KEY}&pageNo=1&numOfRows=2000`; // Increased to max for mass crawl
 
-        const response = await axios.get(`${OPEN_API_URL}?${queryString}`, { timeout: 20000 }); // Increased timeout
+        const response = await axios.get(`${OPEN_API_URL}?${queryString}`, { timeout: 60000 }); // Increased timeout to 60s
         const $ = cheerio.load(response.data, { xmlMode: true });
 
         // ... rest of parsing logic is same ...
@@ -91,9 +91,9 @@ export async function fetchFromKStartup(): Promise<GovernmentNotice[]> {
 
     try {
         console.log(`[OpenAPI] Fetching from K-Startup...`);
-        const queryString = `serviceKey=${KSTARTUP_API_KEY}&pageNo=1&numOfRows=300&startDate=20240101&endDate=20241231`;
+        const queryString = `serviceKey=${KSTARTUP_API_KEY}&pageNo=1&numOfRows=1000&startDate=20240101&endDate=20241231`;
 
-        const response = await axios.get(`${KSTARTUP_ENDPOINT}?${queryString}`, { timeout: 20000 }); // Increased timeout
+        const response = await axios.get(`${KSTARTUP_ENDPOINT}?${queryString}`, { timeout: 60000 }); // Increased timeout
         // ... rest logic ...
         const $ = cheerio.load(response.data, { xmlMode: true });
 
@@ -161,11 +161,11 @@ export async function fetchFromKocca(): Promise<GovernmentNotice[]> {
         const params = new URLSearchParams({
             serviceKey: KOCCA_API_KEY,
             pageNo: '1',
-            numOfRows: '100', // Max limit based on docs might be 100
+            numOfRows: '500', // Increased
             // viewStartDt: '20240101' // Optional, can add if needed
         });
 
-        const response = await axios.get(`${KOCCA_ENDPOINT}?${params.toString()}`, { timeout: 20000 });
+        const response = await axios.get(`${KOCCA_ENDPOINT}?${params.toString()}`, { timeout: 30000 });
         const data = response.data;
 
         // Response structure: { list: [ ... ] } or { INFO: { list: [...] } } based on different docs.
