@@ -12,6 +12,7 @@ export default function Home() {
   const [keyword, setKeyword] = useState('');
   const [region, setRegion] = useState('');
   const [category, setCategory] = useState('');
+  const [agency, setAgency] = useState('');
 
   // Advanced Filter State
   const [startDateFrom, setStartDateFrom] = useState('');
@@ -25,11 +26,15 @@ export default function Home() {
 
   // Debounce search
   const [debouncedKeyword, setDebouncedKeyword] = useState(keyword);
+  const [debouncedAgency, setDebouncedAgency] = useState(agency);
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedKeyword(keyword), 500);
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword);
+      setDebouncedAgency(agency);
+    }, 500);
     return () => clearTimeout(timer);
-  }, [keyword]);
+  }, [keyword, agency]);
 
   const fetchNotices = async () => {
     setLoading(true);
@@ -38,6 +43,7 @@ export default function Home() {
       if (debouncedKeyword) params.append('keyword', debouncedKeyword);
       if (region) params.append('region', region);
       if (category) params.append('category', category);
+      if (debouncedAgency) params.append('agency', debouncedAgency);
 
       if (startDateFrom) params.append('startDateFrom', startDateFrom);
       if (startDateTo) params.append('startDateTo', startDateTo);
@@ -59,7 +65,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchNotices();
-  }, [debouncedKeyword, region, category, startDateFrom, startDateTo, endDateFrom, endDateTo, sort]);
+  }, [debouncedKeyword, debouncedAgency, region, category, startDateFrom, startDateTo, endDateFrom, endDateTo, sort]);
 
   const regions = ['전국', '서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'];
   const categories = ['기술개발(R&D)', '금융/자금', '창업/벤처', '판로/수출', '인력/채용', '경영/컨설팅', '기타'];
@@ -174,6 +180,16 @@ export default function Home() {
               {/* Advanced Filters (Toggle) */}
               {showFilters && (
                 <div className="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2">
+                  <div className="md:col-span-2 space-y-1">
+                    <label className="text-xs font-semibold text-gray-500">주관기관 (담당부처)</label>
+                    <input
+                      type="text"
+                      value={agency}
+                      onChange={(e) => setAgency(e.target.value)}
+                      placeholder="예: 창업진흥원, 서울산업진흥원"
+                      className="form-input block w-full text-sm border-gray-300 rounded-md p-2 placeholder-gray-400 focus:ring-2 focus:ring-[#27273f]/20 focus:border-[#27273f] transition-all"
+                    />
+                  </div>
                   <div className="space-y-1">
                     <label className="text-xs font-semibold text-gray-500">공고일 (기간)</label>
                     <div className="flex items-center gap-2">

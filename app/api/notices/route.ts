@@ -9,6 +9,7 @@ export async function GET(request: Request) {
     const keyword = searchParams.get('keyword');
     const region = searchParams.get('region');
     const category = searchParams.get('category');
+    const agency = searchParams.get('agency');
 
     // Date Filters
     const startDateFrom = searchParams.get('startDateFrom');
@@ -91,6 +92,11 @@ export async function GET(request: Request) {
     // Category
     if (category && category !== '전체 분야') {
         notices = notices.filter(n => n.category && n.category.includes(category));
+    }
+
+    // Agency
+    if (agency) {
+        notices = notices.filter(n => n.agency.includes(agency));
     }
 
     // Announcement Date Range (공고일)
