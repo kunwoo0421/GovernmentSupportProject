@@ -192,7 +192,7 @@ export async function fetchFromKocca(): Promise<GovernmentNotice[]> {
                     category: item.cate || '콘텐츠지원',
                     startDate: startDate || new Date().toISOString().split('T')[0],
                     endDate: endDate,
-                    url: item.link,
+                    url: normalizeUrl(item.link) || `https://www.kocca.kr`,
                     source: '한국콘텐츠진흥원(API)',
                     description: `${item.boardTitle || '지원사업'} 공고입니다.`,
                     fetchedAt: new Date()
